@@ -445,66 +445,6 @@ string bigint::aMinusBWithoutCompare(string a, string b)
 	}
 }
 
-string bigint::aDivideByB(string a, string b, string* rem)
-{
-	int aLen = a.length();
-	int bLen = b.length();
-	int compare = this->compare(a, b);
-	int cnt;
-	bool isFirst = true;
-	string ans, tmp;
-
-	if (compare == 1)
-	{
-		ans = "";
-		tmp = "";
-
-		for (int i = 0; i < aLen; ++i)
-		{
-			tmp += a[i];
-			cnt = 0;
-
-			while (0 <= this->compare(tmp, b))
-			{
-				tmp = aMinusBWithoutCompare(tmp, b);
-				cnt++;
-			}
-
-			ans += (char)(cnt + '0');
-
-			if (tmp.compare("0") == 0 && i != aLen - 1)
-			{
-				tmp = "";
-			}
-		}
-
-		aLen = ans.length();
-
-		for (int i = 0; i < aLen; ++i)
-		{
-			if (ans[i] != '0')
-			{
-				ans = ans.substr(i, aLen);
-				i = aLen;
-			}
-		}
-
-		*rem = tmp;
-	}
-	else if (compare == 0)
-	{
-		ans = "1";
-		*rem = "0";
-	}
-	else
-	{
-		ans = "0";
-		*rem = a;
-	}
-
-	return ans;
-}
-
 string bigint::aDivideByB(string a, string b)
 {
 	int aLen = a.length();

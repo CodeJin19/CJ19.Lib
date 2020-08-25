@@ -14,8 +14,6 @@ private:
 
 	string aMinusBWithoutCompare(string a, string b);
 
-	string aDivideByB(string a, string b, string* rem);
-
 	string aDivideByB(string a, string b);
 
 	string aModularB(string a, string b);
