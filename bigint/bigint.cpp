@@ -3,31 +3,6 @@
 
 using namespace std;
 
-int bigint::isBigger(string a, string b)
-{
-	int aLen = a.length();
-	int bLen = b.length();
-
-	if (bLen < aLen)
-	{
-		return 1;
-	}
-	else if (aLen == bLen)
-	{
-		for (int i = 0; i < aLen; ++i)
-			if (b[i] < a[i])
-				return 1;
-			else if (a[i] < b[i])
-				return -1;
-
-		return 0;
-	}
-	else
-	{
-		return -1;
-	}
-}
-
 string bigint::aMinusB(string a, string b)
 {
 	int aLen = a.length();
@@ -36,7 +11,7 @@ string bigint::aMinusB(string a, string b)
 	bool carry;
 	string ans;
 
-	compare = isBigger(a, b);
+	compare = this->compare(a, b);
 	reverse(a.begin(), a.end());
 	reverse(b.begin(), b.end());
 
@@ -302,94 +277,6 @@ string bigint::aPlusB(string a, string b)
 	return ans;
 }
 
-string bigint::sub(string a, string b)
-{
-	int aLen, bLen;
-	string ans, atmp, btmp;
-
-	if (a[0] == '-')
-	{
-		if (b[0] == '-') // - - -
-		{
-			aLen = a.length();
-			atmp = a.substr(1, aLen);
-
-			bLen = b.length();
-			btmp = b.substr(1, bLen);
-
-			ans = aMinusB(btmp, atmp);
-		}
-		else // - - +
-		{
-			aLen = a.length();
-			atmp = a.substr(1, aLen);
-
-			ans = "-";
-			ans.append(aPlusB(atmp, b));
-		}
-	}
-	else
-	{
-		if (b[0] == '-') // + - -
-		{
-			bLen = b.length();
-			btmp = b.substr(1, bLen);
-
-			ans = aPlusB(a, btmp);
-		}
-		else // + - +
-		{
-			ans = aMinusB(a, b);
-		}
-	}
-
-	return ans;
-}
-
-string bigint::add(string a, string b)
-{
-	int aLen, bLen;
-	string ans, atmp, btmp;
-
-	if (a[0] == '-')
-	{
-		if (b[0] == '-') // - + -
-		{
-			aLen = a.length();
-			atmp = a.substr(1, aLen);
-
-			bLen = b.length();
-			btmp = b.substr(1, bLen);
-
-			ans = "-";
-			ans.append(aPlusB(atmp, btmp));
-		}
-		else // - + +
-		{
-			aLen = a.length();
-			atmp = a.substr(1, aLen);
-
-			ans = aMinusB(b, atmp);
-		}
-	}
-	else
-	{
-		if (b[0] == '-') // + + -
-		{
-			bLen = b.length();
-			btmp = b.substr(1, bLen);
-
-			ans = aMinusB(a, btmp);
-		}
-		else // + + +
-		{
-			ans = aPlusB(a, b);
-		}
-	}
-
-	return ans;
-}
-
 string bigint::aTimesB(string a, string b)
 {
 	int aLen = a.length();
@@ -481,75 +368,12 @@ string bigint::aTimesB(string a, string b)
 	return ans;
 }
 
-string bigint::mul(string a, string b)
-{
-	int aLen, bLen;
-	string ans, atmp, btmp, tmp;
-
-	if (a[0] == '-')
-	{
-		if (b[0] == '-') // - * -
-		{
-			aLen = a.length();
-			atmp = a.substr(1, aLen);
-
-			bLen = b.length();
-			btmp = b.substr(1, bLen);
-
-			ans = aTimesB(atmp, btmp);
-		}
-		else // - * +
-		{
-			aLen = a.length();
-			atmp = a.substr(1, aLen);
-
-			tmp = aTimesB(atmp, b);
-
-			if (tmp.length() == 1 && tmp[0] == '0')
-			{
-				ans = tmp;
-			}
-			else
-			{
-				ans = "-";
-				ans.append(tmp);
-			}
-		}
-	}
-	else
-	{
-		if (b[0] == '-') // + * -
-		{
-			bLen = b.length();
-			btmp = b.substr(1, bLen);
-
-			tmp = aTimesB(a, btmp);
-
-			if (tmp.length() == 1 && tmp[0] == '0')
-			{
-				ans = tmp;
-			}
-			else
-			{
-				ans = "-";
-				ans.append(tmp);
-			}
-		}
-		else // + * +
-		{
-			ans = aTimesB(a, b);
-		}
-	}
-
-	return ans;
-}
-
 string bigint::aMinusBWithoutCompare(string a, string b)
 {
 
 	int aLen = a.length();
 	int bLen = b.length();
-	int sum, compare;
+	int sum;
 	bool carry;
 	string ans;
 
@@ -621,11 +445,11 @@ string bigint::aMinusBWithoutCompare(string a, string b)
 	}
 }
 
-string bigint::aDivedsByBInt(string a, string b, string* rem)
+string bigint::aDivideByB(string a, string b, string* rem)
 {
 	int aLen = a.length();
 	int bLen = b.length();
-	int compare = isBigger(a, b);
+	int compare = this->compare(a, b);
 	int cnt;
 	bool isFirst = true;
 	string ans, tmp;
@@ -640,7 +464,7 @@ string bigint::aDivedsByBInt(string a, string b, string* rem)
 			tmp += a[i];
 			cnt = 0;
 
-			while (0 <= isBigger(tmp, b))
+			while (0 <= this->compare(tmp, b))
 			{
 				tmp = aMinusBWithoutCompare(tmp, b);
 				cnt++;
@@ -676,6 +500,375 @@ string bigint::aDivedsByBInt(string a, string b, string* rem)
 	{
 		ans = "0";
 		*rem = a;
+	}
+
+	return ans;
+}
+
+string bigint::aDivideByB(string a, string b)
+{
+	int aLen = a.length();
+	int bLen = b.length();
+	int compare = this->compare(a, b);
+	int cnt;
+	bool isFirst = true;
+	string ans, tmp;
+
+	if (compare == 1)
+	{
+		ans = "";
+		tmp = "";
+
+		for (int i = 0; i < aLen; ++i)
+		{
+			tmp += a[i];
+			cnt = 0;
+
+			while (0 <= this->compare(tmp, b))
+			{
+				tmp = aMinusBWithoutCompare(tmp, b);
+				cnt++;
+			}
+
+			ans += (char)(cnt + '0');
+
+			if (tmp.compare("0") == 0 && i != aLen - 1)
+			{
+				tmp = "";
+			}
+		}
+
+		aLen = ans.length();
+
+		for (int i = 0; i < aLen; ++i)
+		{
+			if (ans[i] != '0')
+			{
+				ans = ans.substr(i, aLen);
+				i = aLen;
+			}
+		}
+	}
+	else if (compare == 0)
+	{
+		ans = "1";
+	}
+	else
+	{
+		ans = "0";
+	}
+
+	return ans;
+}
+
+string bigint::aModularB(string a, string b)
+{
+	int aLen = a.length();
+	int bLen = b.length();
+	int compare = this->compare(a, b);
+	int cnt;
+	bool isFirst = true;
+	string ans, tmp;
+
+	if (compare == 1)
+	{
+		ans = "";
+		tmp = "";
+
+		for (int i = 0; i < aLen; ++i)
+		{
+			tmp += a[i];
+			cnt = 0;
+
+			while (0 <= this->compare(tmp, b))
+			{
+				tmp = aMinusBWithoutCompare(tmp, b);
+				cnt++;
+			}
+
+			ans += (char)(cnt + '0');
+
+			if (tmp.compare("0") == 0 && i != aLen - 1)
+			{
+				tmp = "";
+			}
+		}
+
+		ans = tmp;
+	}
+	else if (compare == 0)
+	{
+		ans = "0";
+	}
+	else
+	{
+		ans = a;
+	}
+
+	return ans;
+}
+
+int bigint::compare(string a, string b)
+{
+	int aLen = a.length();
+	int bLen = b.length();
+
+	if (bLen < aLen)
+	{
+		return 1;
+	}
+	else if (aLen == bLen)
+	{
+		for (int i = 0; i < aLen; ++i)
+			if (b[i] < a[i])
+				return 1;
+			else if (a[i] < b[i])
+				return -1;
+
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+string bigint::sub(string a, string b)
+{
+	int aLen, bLen;
+	string ans, atmp, btmp;
+
+	if (a[0] == '-')
+	{
+		if (b[0] == '-') // - - -
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = aMinusB(btmp, atmp);
+		}
+		else // - - +
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			ans = "-";
+			ans.append(aPlusB(atmp, b));
+		}
+	}
+	else
+	{
+		if (b[0] == '-') // + - -
+		{
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = aPlusB(a, btmp);
+		}
+		else // + - +
+		{
+			ans = aMinusB(a, b);
+		}
+	}
+
+	return ans;
+}
+
+string bigint::add(string a, string b)
+{
+	int aLen, bLen;
+	string ans, atmp, btmp;
+
+	if (a[0] == '-')
+	{
+		if (b[0] == '-') // - + -
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = "-";
+			ans.append(aPlusB(atmp, btmp));
+		}
+		else // - + +
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			ans = aMinusB(b, atmp);
+		}
+	}
+	else
+	{
+		if (b[0] == '-') // + + -
+		{
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = aMinusB(a, btmp);
+		}
+		else // + + +
+		{
+			ans = aPlusB(a, b);
+		}
+	}
+
+	return ans;
+}
+
+string bigint::mul(string a, string b)
+{
+	int aLen, bLen;
+	string ans, atmp, btmp, tmp;
+
+	if (a[0] == '-')
+	{
+		if (b[0] == '-') // - * -
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = aTimesB(atmp, btmp);
+		}
+		else // - * +
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			tmp = aTimesB(atmp, b);
+
+			if (tmp.length() == 1 && tmp[0] == '0')
+			{
+				ans = tmp;
+			}
+			else
+			{
+				ans = "-";
+				ans.append(tmp);
+			}
+		}
+	}
+	else
+	{
+		if (b[0] == '-') // + * -
+		{
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			tmp = aTimesB(a, btmp);
+
+			if (tmp.length() == 1 && tmp[0] == '0')
+			{
+				ans = tmp;
+			}
+			else
+			{
+				ans = "-";
+				ans.append(tmp);
+			}
+		}
+		else // + * +
+		{
+			ans = aTimesB(a, b);
+		}
+	}
+
+	return ans;
+}
+
+string bigint::div(string a, string b)
+{
+	int aLen, bLen;
+	string ans, atmp, btmp;
+
+	if (a[0] == '-')
+	{
+		if (b[0] == '-') // - / -
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = aDivideByB(atmp, btmp);
+		}
+		else // - / +
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			ans = "-";
+			ans.append(aDivideByB(atmp, b));
+		}
+	}
+	else
+	{
+		if (b[0] == '-') // + / -
+		{
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = "-";
+			ans.append(aDivideByB(a, btmp));
+		}
+		else // + / +
+		{
+			ans = aDivideByB(a, b);
+		}
+	}
+
+	return ans;
+}
+
+string bigint::mod(string a, string b)
+{
+	int aLen, bLen;
+	string ans, atmp, btmp;
+
+	if (a[0] == '-')
+	{
+		if (b[0] == '-') // - % -
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = "-";
+			ans.append(aModularB(atmp, btmp));
+		}
+		else // - % +
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			ans = "-";
+			ans.append(aModularB(atmp, b));
+		}
+	}
+	else
+	{
+		if (b[0] == '-') // + % -
+		{
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = aModularB(a, btmp);
+		}
+		else // + / +
+		{
+			ans = aModularB(a, b);
+		}
 	}
 
 	return ans;
