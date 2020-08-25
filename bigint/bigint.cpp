@@ -449,10 +449,8 @@ string bigint::aMinusBWithoutCompare(string a, string b)
 string bigint::aDivideByB(string a, string b)
 {
 	int aLen = a.length();
-	int bLen = b.length();
 	int compare = this->compare(a, b);
 	int cnt;
-	bool isFirst = true;
 	string ans, tmp;
 
 	if (compare == 1)
@@ -505,10 +503,8 @@ string bigint::aDivideByB(string a, string b)
 string bigint::aModularB(string a, string b)
 {
 	int aLen = a.length();
-	int bLen = b.length();
 	int compare = this->compare(a, b);
 	int cnt;
-	bool isFirst = true;
 	string ans, tmp;
 
 	if (compare == 1)
