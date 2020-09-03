@@ -321,7 +321,7 @@ string bigint::aTimesB(string a, string b)
 				tmp += (char)(carry + '0');
 
 			reverse(tmp.begin(), tmp.end());
-			ans = add(ans, tmp);
+			ans = this->aPlusB(ans, tmp);
 		}
 	}
 	else
@@ -358,7 +358,7 @@ string bigint::aTimesB(string a, string b)
 				tmp += (char)(carry + '0');
 
 			reverse(tmp.begin(), tmp.end());
-			ans = add(ans, tmp);
+			ans = this->aPlusB(ans, tmp);
 		}
 	}
 
@@ -812,4 +812,87 @@ string bigint::mod(string a, string b)
 	}
 
 	return ans;
+}
+
+string bigint::abs(string a, string b)
+{
+	int aLen, bLen, compare;
+	string ans, atmp, btmp;
+
+	if (a[0] == '-')
+	{
+		if (b[0] == '-') // - & -
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			compare = this->compare(atmp, btmp);
+
+			if (compare == 1)
+			{
+				ans = aMinusB(atmp, btmp);
+			}
+			else if (compare == 0)
+			{
+				ans = "0";
+			}
+			else
+			{
+				ans = aMinusB(btmp, atmp);
+			}
+		}
+		else // - & +
+		{
+			aLen = a.length();
+			atmp = a.substr(1, aLen);
+
+			ans = aPlusB(atmp, b);
+		}
+	}
+	else
+	{
+		if (b[0] == '-') // + & -
+		{
+			bLen = b.length();
+			btmp = b.substr(1, bLen);
+
+			ans = aPlusB(a, btmp);
+		}
+		else // + & +
+		{
+			compare = this->compare(a, b);
+
+			if (compare == 1)
+			{
+				ans = aMinusB(a, b);
+			}
+			else if (compare == 0)
+			{
+				ans = "0";
+			}
+			else
+			{
+				ans = aMinusB(b, a);
+			}
+		}
+	}
+
+	return ans;
+}
+
+string bigint::abs(string a)
+{
+	int aLen = a.length();
+
+	if (a[0] == '-')
+	{
+		return a.substr(1, aLen);
+	}
+	else
+	{
+		return a;
+	}
 }

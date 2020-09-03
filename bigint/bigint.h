@@ -30,4 +30,8 @@ public:
 	string div(string a, string b);
 
 	string mod(string a, string b);
+
+	string abs(string a, string b);
+
+	string abs(string a);
 };
