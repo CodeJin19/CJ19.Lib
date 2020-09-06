@@ -342,7 +342,7 @@ string bigint::aTimesB(string a, string b)
 				sum = (a[j] - '0') * (b[i] - '0');
 				sum += carry;
 
-				if (10 < sum)
+				if (10 <= sum)
 				{
 					carry = sum / 10;
 					sum %= 10;
