@@ -810,7 +810,6 @@ string bigint::mod(string a, string b)
 
 	return ans;
 }
-<<<<<<< HEAD
 
 string bigint::abs(string a, string b)
 {
@@ -894,5 +893,3 @@ string bigint::abs(string a)
 		return a;
 	}
 }
-=======
->>>>>>> f61ba69adb3a7e6df5fa8932b9e34762d2ee304d
